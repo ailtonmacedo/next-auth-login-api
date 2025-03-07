@@ -49,7 +49,9 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.access_token = user.access_token;
         token.refresh_token = user.refresh_token;
-        token.accessTokenExpires = Date.now() + 60 * 60 * 1000; // 1h
+        if (user.exp) {
+          token.accessTokenExpires = user.exp * 1000;
+        }
       }
 
       // Se o token ainda não expirou, retorna
@@ -72,7 +74,9 @@ export const authOptions: NextAuthOptions = {
         if (res.ok && data?.access_token) {
           token.access_token = data.access_token;
           token.refresh_token = data.refresh_token;
-          token.accessTokenExpires = Date.now() + 60 * 60 * 1000;
+          if (user.exp) {
+            token.accessTokenExpires = user.exp * 1000;
+          }
         }
       } catch (error) {
         console.error("Erro ao atualizar token:", error);
